@@ -5,9 +5,9 @@ from typing import Dict
 from more_itertools import distinct_permutations
 from tqdm import tqdm
 
-from utils import dfs
+from utils import bfs
 from utils import graphs
-from utils import partitions_of
+from utils import num_partitions_of
 
 # https://stackoverflow.com/a/44209393
 def partitions(n, I=1):
@@ -16,7 +16,8 @@ def partitions(n, I=1):
         for p in partitions(n - i, i):
             yield (i,) + p
 
-def is_valid(grid: tuple[int], graphnxn: Dict[int, list[int]]) -> bool:
+
+def is_valid(grid: tuple[int], graphnxn: Dict[int, tuple[int, ...]]) -> bool:
     is_valid = True
     visited = set()
     grid_state = {}
@@ -24,17 +25,15 @@ def is_valid(grid: tuple[int], graphnxn: Dict[int, list[int]]) -> bool:
         if sourcenode in visited:
             continue
         visited.add(sourcenode)
-        is_valid &= dfs(grid, sourcenode, visited, grid_state, graphnxn)
-        if not is_valid:
-            return False
+        is_valid &= bfs(grid, sourcenode, visited, grid_state, graphnxn)
 
-    return True
+    return is_valid
 
 
 if __name__ == "__main__":
     count = 0
-    n = int(sys.argv[1])  # side length of the grid
-    m = 3  # the maximum sized polyomino allowed by the grid
+    n = 3  # side length of the grid
+    m = 9  # the maximum sized polyomino allowed by the grid
     graph_chosen = graphs[n]
 
     # If S_p(a) generates all the partitions of number `a`
@@ -51,7 +50,10 @@ if __name__ == "__main__":
     if r:
         partition_iterators += [partitions(r)]
 
-    for parts in tqdm(product(*partition_iterators), total=(partitions_of(m) ** q) * partitions_of(r)):
+    for parts in tqdm(
+        product(*partition_iterators),
+        total=(num_partitions_of(m) ** q) * num_partitions_of(r),
+    ):
         grid = []
         for part in parts:
             for num in part:
@@ -59,6 +61,7 @@ if __name__ == "__main__":
 
         for game in distinct_permutations(grid):
             if is_valid(game, graph_chosen):
+                print(f"{grid[0]} {grid[1]} {grid[2]}\n{grid[3]} {grid[4]} {grid[5]}\n{grid[6]} {grid[7]} {grid[8]}\n\n")
                 count += 1
 
-    print(f"Total Count: {count}")
+    print("Total Count: ", count)

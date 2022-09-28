@@ -1,6 +1,6 @@
 from tqdm import tqdm
 from itertools import product
-from utils import dfs, graph3x3
+from utils import bfs, graph3x3
 
 # https://stackoverflow.com/a/44209393
 def partitions(n, I=1):
@@ -17,7 +17,7 @@ def is_valid(grid: tuple[int]) -> bool:
         if sourcenode in visited:
             continue
         visited.add(sourcenode)
-        is_valid &= dfs(grid, sourcenode, visited, grid_state, graph3x3)
+        is_valid &= bfs(grid, sourcenode, visited, grid_state, graph3x3)
         if not is_valid:
             return False
 

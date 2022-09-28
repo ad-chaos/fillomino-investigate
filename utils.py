@@ -44,86 +44,74 @@ graph4x4 = {
 
 
 graph5x5 = {
-    0: (1,5),
-    1: (0,6,2),
-    2: (1,7,3),
-    3: (2,8,4),
-    4: (3,9),
-    5: (0,6,10),
-    6: (1,5,11,7),
-    7: (6,2,12,8),
-    8: (7,3,13,9),
-    9: (4,8,14),
-    10: (5,11,15),
-    11: (10,6,16,12),
-    12: (11,7,17,13),
-    13: (12,8,18,14),
-    14: (9,13,19),
-    15: (10,16,20),
-    16: (15,11,21,17),
-    17: (16,12,22,18),
-    18: (17,13,23,19),
-    19: (14,18,24),
-    20: (15,21),
-    21: (20,16,22),
-    22: (21,17,23),
-    23: (22,18,24),
-    24: (19,23),
+    0: (1, 5),
+    1: (0, 6, 2),
+    2: (1, 7, 3),
+    3: (2, 8, 4),
+    4: (3, 9),
+    5: (0, 6, 10),
+    6: (1, 5, 11, 7),
+    7: (6, 2, 12, 8),
+    8: (7, 3, 13, 9),
+    9: (4, 8, 14),
+    10: (5, 11, 15),
+    11: (10, 6, 16, 12),
+    12: (11, 7, 17, 13),
+    13: (12, 8, 18, 14),
+    14: (9, 13, 19),
+    15: (10, 16, 20),
+    16: (15, 11, 21, 17),
+    17: (16, 12, 22, 18),
+    18: (17, 13, 23, 19),
+    19: (14, 18, 24),
+    20: (15, 21),
+    21: (20, 16, 22),
+    22: (21, 17, 23),
+    23: (22, 18, 24),
+    24: (19, 23),
 }
 graphs = [graph0x0, graph1x1, graph2x2, graph3x3, graph4x4, graph5x5]
 
 
-def dfs(
-    grid: tuple[int],
+def bfs(
+    grid: tuple[int, ...],
     starting_node: int,
     visited: Set[int],
-    state: Dict[int, bool],
-    graph: Dict[int, list[int]],
+    grid_state: Dict[int, bool],
+    graph: Dict[int, tuple[int, ...]],
 ) -> bool:
     kind_count = 1
+    stack = [starting_node]
+    local_visited = set()
+    while len(stack):
+        visiting_node = stack.pop()
 
-    def dfs_impl(
-        grid: tuple[int],
-        starting_node: int,
-        visited: Set[int],
-        state: Dict[int, bool],
-    ) -> bool:
-        if starting_node in state:
-            return state[starting_node]
+        for node in graph[visiting_node]:
+            if node in visited:
+                continue
 
-        nonlocal kind_count
-        nonlocal graph
+            if grid[starting_node] == grid[node]:
+                stack = [node] + stack# stack.append(node)
+                local_visited.add(node)
+                visited.add(node)
+                kind_count += 1
 
-        stack = [starting_node]
-        while len(stack):
-            if kind_count > grid[starting_node]:
-                break
-            visiting_node = stack.pop()
+    a_polyomino = kind_count == grid[starting_node]
 
-            for node in graph[visiting_node]:
-                if node not in visited:
-                    stack.append(node)
-                    visited.add(node)
-                    if grid[starting_node] == grid[node]:
-                        kind_count += 1
+    for node in local_visited:
+        grid_state[node] = a_polyomino
 
-        a_polyomino = kind_count == grid[starting_node]
-
-        for visited_nodes in visited:
-            state[visited_nodes] = a_polyomino
-        return a_polyomino
-
-    return dfs_impl(grid, starting_node, visited, state)
+    return a_polyomino
 
 
-def partitions_of(n):
+def num_partitions_of(n):
     if n == 0:
         return 1
     S = 0
     J = n - 1
     k = 2
     while 0 <= J:
-        T = partitions_of(J)
+        T = num_partitions_of(J)
         S = S + T if (k // 2) % 2 else S - T
         J -= k if (k) % 2 else k // 2
         k += 1

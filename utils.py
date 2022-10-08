@@ -1,76 +1,18 @@
 from typing import Dict, Set
 
-graph0x0 = {}
 
-graph1x1 = {0: (0,)}
+def gen_graph(n: int) -> list[tuple[int, ...]]:
+    grid_graph = []
+    neighbours = []
+    for i in range(n):
+        for j in range(n):
+            neighbours.clear()
+            for dx, dy in [(0, 1), (0, -1), (1, 0), (-1, 0)]:
+                if 0 <= i + dx < n and 0 <= j + dy < n:
+                    neighbours.append(n * (i + dx) + (j + dy))
+            grid_graph.append(tuple(neighbours))
 
-graph2x2 = {
-    0: (1, 2),
-    1: (0, 3),
-    2: (0, 3),
-    3: (1, 2),
-}
-
-graph3x3 = {
-    0: (1, 3),
-    1: (0, 2, 4),
-    2: (1, 5),
-    3: (0, 6, 4),
-    4: (1, 7, 3, 5),
-    5: (2, 8, 4),
-    6: (3, 7),
-    7: (6, 8, 4),
-    8: (7, 5),
-}
-
-graph4x4 = {
-    0: (1, 4),
-    1: (0, 5, 2),
-    2: (1, 6, 3),
-    3: (2, 7),
-    4: (0, 5, 8),
-    5: (1, 4, 6, 9),
-    6: (5, 2, 10, 7),
-    7: (3, 6, 11),
-    8: (4, 9, 12),
-    9: (8, 5, 13, 10),
-    10: (9, 6, 14, 11),
-    11: (15, 10, 7),
-    12: (8, 13),
-    13: (12, 9, 14),
-    14: (13, 10, 15),
-    15: (11, 14),
-}
-
-
-graph5x5 = {
-    0: (1, 5),
-    1: (0, 6, 2),
-    2: (1, 7, 3),
-    3: (2, 8, 4),
-    4: (3, 9),
-    5: (0, 6, 10),
-    6: (1, 5, 11, 7),
-    7: (6, 2, 12, 8),
-    8: (7, 3, 13, 9),
-    9: (4, 8, 14),
-    10: (5, 11, 15),
-    11: (10, 6, 16, 12),
-    12: (11, 7, 17, 13),
-    13: (12, 8, 18, 14),
-    14: (9, 13, 19),
-    15: (10, 16, 20),
-    16: (15, 11, 21, 17),
-    17: (16, 12, 22, 18),
-    18: (17, 13, 23, 19),
-    19: (14, 18, 24),
-    20: (15, 21),
-    21: (20, 16, 22),
-    22: (21, 17, 23),
-    23: (22, 18, 24),
-    24: (19, 23),
-}
-graphs = [graph0x0, graph1x1, graph2x2, graph3x3, graph4x4, graph5x5]
+    return grid_graph
 
 
 def bfs(
@@ -78,7 +20,7 @@ def bfs(
     starting_node: int,
     visited: Set[int],
     grid_state: Dict[int, bool],
-    graph: Dict[int, tuple[int, ...]],
+    graph: list[tuple[int, ...]],
 ) -> bool:
     kind_count = 1
     stack = [starting_node]
@@ -104,6 +46,8 @@ def bfs(
     return a_polyomino
 
 
+# Code to just get the number of partitions of a number
+# faster than generating tuples
 def num_partitions_of(n):
     if n == 0:
         return 1
@@ -127,14 +71,22 @@ def partitions(n, I=1):
 
 
 def is_valid_fillomino_game(
-    grid: tuple[int, ...], graphnxn: Dict[int, tuple[int, ...]]
+    grid: tuple[int, ...], graphnxn: list[tuple[int, ...]], side_lenght: int
 ) -> bool:
     is_valid = True
     visited = set()
     grid_state = {}
-    for sourcenode in graphnxn.keys():
+    for sourcenode in range(side_lenght**2):
         if sourcenode in visited:
             continue
         visited.add(sourcenode)
         is_valid &= bfs(grid, sourcenode, visited, grid_state, graphnxn)
     return is_valid
+
+
+def print_grid(grid: tuple[int, ...], side_lenght: int) -> None:
+    for i in range(side_lenght**2):
+        if i % side_lenght == 0:
+            print()
+        print(grid[i], end=" ")
+    print()

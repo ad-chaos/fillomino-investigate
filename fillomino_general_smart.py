@@ -1,33 +1,12 @@
 from itertools import product
-from typing import Dict
 
 from more_itertools import distinct_permutations
 from tqdm import tqdm
 
-from utils import bfs
 from utils import graphs
 from utils import num_partitions_of
-
-# https://stackoverflow.com/a/44209393
-def partitions(n, I=1):
-    yield (n,)
-    for i in range(I, n // 2 + 1):
-        for p in partitions(n - i, i):
-            yield (i,) + p
-
-
-def is_valid(grid: tuple[int], graphnxn: Dict[int, tuple[int, ...]]) -> bool:
-    is_valid = True
-    visited = set()
-    grid_state = {}
-    for sourcenode in graphnxn.keys():
-        if sourcenode in visited:
-            continue
-        visited.add(sourcenode)
-        is_valid &= bfs(grid, sourcenode, visited, grid_state, graphnxn)
-
-    return is_valid
-
+from utils import partitions
+from utils import is_valid_fillomino_game
 
 if __name__ == "__main__":
     count = 0
@@ -59,8 +38,8 @@ if __name__ == "__main__":
                 grid += [num for _ in range(num)]
 
         for game in distinct_permutations(grid):
-            if is_valid(game, graph_chosen):
-                print(f"{grid[0]} {grid[1]} {grid[2]}\n{grid[3]} {grid[4]} {grid[5]}\n{grid[6]} {grid[7]} {grid[8]}\n\n")
+            if is_valid_fillomino_game(game, graph_chosen):
+                print(f"{game[0]} {game[1]} {game[2]}\n{game[3]} {game[4]} {game[5]}\n{game[6]} {game[7]} {game[8]}\n\n")
                 count += 1
 
     print("Total Count: ", count)

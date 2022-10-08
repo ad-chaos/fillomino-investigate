@@ -91,7 +91,7 @@ def bfs(
                 continue
 
             if grid[starting_node] == grid[node]:
-                stack = [node] + stack# stack.append(node)
+                stack = [node] + stack  # stack.append(node)
                 local_visited.add(node)
                 visited.add(node)
                 kind_count += 1
@@ -116,3 +116,25 @@ def num_partitions_of(n):
         J -= k if (k) % 2 else k // 2
         k += 1
     return S
+
+
+# https://stackoverflow.com/a/44209393
+def partitions(n, I=1):
+    yield (n,)
+    for i in range(I, n // 2 + 1):
+        for p in partitions(n - i, i):
+            yield (i,) + p
+
+
+def is_valid_fillomino_game(
+    grid: tuple[int, ...], graphnxn: Dict[int, tuple[int, ...]]
+) -> bool:
+    is_valid = True
+    visited = set()
+    grid_state = {}
+    for sourcenode in graphnxn.keys():
+        if sourcenode in visited:
+            continue
+        visited.add(sourcenode)
+        is_valid &= bfs(grid, sourcenode, visited, grid_state, graphnxn)
+    return is_valid

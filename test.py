@@ -80,12 +80,18 @@ grid = [1, 1, 1, 1, 1, 1, 1, 1, 1]
 test_dfs3x3(grid, [0, 2, 4, 8], [False, False, False, False])
 print()
 
+
 print("Testing Grid 9: ")
+grid = [1, 1, 2, 2, 5, 5, 5, 5, 5]
+test_dfs3x3(grid, [0, 2], [False, False])
+print()
+
+print("Testing Grid 10: ")
 grid = [4, 4, 3, 3, 4, 4, 3, 1, 2, 2, 6, 6, 6, 6, 6, 6]
 test_dfs4x4(grid, [0, 3, 6, 1], [True, True, True, True])
 print()
 
-print("Testing Grid 10: ")
+print("Testing Grid 11: ")
 grid = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]
 test_dfs4x4(grid, [1, 5, 9], [False, False, False])
 print()

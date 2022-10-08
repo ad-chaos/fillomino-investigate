@@ -1,13 +1,5 @@
 from utils import bfs, graph3x3, graph4x4
 
-# TODO: Add a grid set so that the following test case does not fail
-# grid = [4, 4, 6, 4, 4, 6, 6, 6, 6]
-
-# test_dfs3x3(grid, [1, 3], [True, True])
-#
-# It fails because 3 is already visited and I am not saying that it is,
-# easy fix is to re-traverse but I want a nicer solution
-
 outcomes = {True: "Passed ✅", False: "Failed ❌"}
 
 

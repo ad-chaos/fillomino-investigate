@@ -28,7 +28,6 @@ def fillomino_finder_smart(side_length, max_size):
 
     all_games = []
     grid_graph = gen_graph(side_length)
-    count = 0
     for part in tqdm(
         partitions(side_length*side_length),
         total=(num_partitions_of(side_length * side_length)),
@@ -43,10 +42,7 @@ def fillomino_finder_smart(side_length, max_size):
         for game in distinct_permutations(grid):
             if is_valid_fillomino_game(game, grid_graph, side_length):
                 all_games.append(game)
-                print_grid(game, side_length)
-                count += 1
 
-    print("Total Count: ", count)
     return all_games
 
 
@@ -54,4 +50,8 @@ if __name__ == "__main__":
     # Takes two inputs if run as python fillomino_general_smart.py <n> <m>
     # n: side length of the grid
     # m: the maximum sized polyomino allowed by the grid
-    fillomino_finder_smart(*map(int, sys.argv[1:]) if len(sys.argv) == 3 else (3, 9))
+    n, m = map(int, sys.argv[1:]) if len(sys.argv) == 3 else (3, 9)
+    games = fillomino_finder_smart(n, m)
+    print(f"Total games possible are:", len(games))
+    for game in games:
+        print_grid(game, n)

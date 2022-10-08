@@ -1,4 +1,3 @@
-from itertools import product
 import sys
 
 from more_itertools import distinct_permutations
@@ -10,36 +9,49 @@ from utils import num_partitions_of
 from utils import partitions
 from utils import is_valid_fillomino_game
 
-count = 0
-# n: side length of the grid
-# m: the maximum sized polyomino allowed by the grid
-n, m = map(int, sys.argv[1:]) if len(sys.argv) == 3 else (3, 9)
 
-# If S_p(a) generates all the partitions of number `a`
-# and Permute(S) gives all the permutations of the tuple S
-# then our search space is Permute(S_p(m)^q * S_p(r))
-# where m,q and r are integers that satisfy the equation
-# n^2 = mq + r { 0<= r < m }
-
-q = n * n // m
-r = n * n - m * q
-
-partition_iterators = [partitions(m) for _ in range(q)]
-if r:
-    partition_iterators += [partitions(r)]
-
-for parts in tqdm(
-    product(*partition_iterators),
-    total=(num_partitions_of(m) ** q) * num_partitions_of(r),
-):
-    grid = []
+def max_n(parts: tuple[tuple[int, ...]]) -> int:
+    max_num = -1
     for part in parts:
+        for num in part:
+            max_num = max(num, max_num)
+    return max_num
+
+
+def fillomino_finder_smart(side_length, max_size):
+
+    # If S_p(a) generates all the partitions of number `a`
+    # and Permute(S) gives all the permutations of the tuple S
+    # then our search space is Permute(S_p(n*n))
+    # if the max_size is less than n*n then we ignore partitions where any
+    # number inside it is greater than max_size
+
+    all_games = []
+    grid_graph = gen_graph(side_length)
+    count = 0
+    for part in tqdm(
+        partitions(side_length*side_length),
+        total=(num_partitions_of(side_length * side_length)),
+    ):
+        if max(part) > max_size:
+            continue
+
+        grid = []
         for num in part:
             grid += [num for _ in range(num)]
 
-    for game in distinct_permutations(grid):
-        if is_valid_fillomino_game(game, gen_graph(n), n):
-            print_grid(game, n)
-            count += 1
+        for game in distinct_permutations(grid):
+            if is_valid_fillomino_game(game, grid_graph, side_length):
+                all_games.append(game)
+                print_grid(game, side_length)
+                count += 1
 
-print("Total Count: ", count)
+    print("Total Count: ", count)
+    return all_games
+
+
+if __name__ == "__main__":
+    # Takes two inputs if run as python fillomino_general_smart.py <n> <m>
+    # n: side length of the grid
+    # m: the maximum sized polyomino allowed by the grid
+    fillomino_finder_smart(*map(int, sys.argv[1:]) if len(sys.argv) == 3 else (3, 9))

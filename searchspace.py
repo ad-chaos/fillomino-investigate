@@ -1,3 +1,4 @@
+import sys
 from math import factorial
 
 from tqdm import tqdm
@@ -7,11 +8,10 @@ from utils import partitions
 
 if __name__ == "__main__":
     count = 0
-    n = 3  # side length of the grid
-    m = 9  # the maximum sized polyomino allowed by the grid
+    n, m = map(int, sys.argv[1:]) if len(sys.argv) == 3 else (3, 9)
     permutations_of_grid = factorial(n * n)
 
-    for part in tqdm(partitions(n * n), total=(num_partitions_of(n * n))):
+    for part in partitions(n * n):
         if max(part) > m:
             continue
         grid = []
@@ -24,5 +24,5 @@ if __name__ == "__main__":
 
         count += temp
 
-    print("Total search space using partition idea:", count)
+    print("Total search space using partition idea:", int(count))
     print("Total search space using naive method:", m**n**2)

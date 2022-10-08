@@ -2,20 +2,13 @@ import sys
 from math import factorial
 from collections import Counter
 from itertools import product
-from utils import partitions_of
+from utils import num_partitions_of
+from utils import partitions
 from tqdm import tqdm
-
-# https://stackoverflow.com/a/44209393
-def partitions(n, I=1):
-    yield (n,)
-    for i in range(I, n // 2 + 1):
-        for p in partitions(n - i, i):
-            yield (i,) + p
-
 
 if __name__ == "__main__":
     count = 0
-    n = int(sys.argv[1])  # side length of the grid
+    n = 3  # side length of the grid
     m = 9  # the maximum sized polyomino allowed by the grid
     naive_space = factorial(n * n)
 
@@ -27,7 +20,8 @@ if __name__ == "__main__":
         partition_iterators += [partitions(r)]
 
     for parts in tqdm(
-        product(*partition_iterators), total=(partitions_of(m) ** q) * partitions_of(r)
+        product(*partition_iterators),
+        total=(num_partitions_of(m) ** q) * num_partitions_of(r),
     ):
         grid = []
         for part in parts:
@@ -40,6 +34,5 @@ if __name__ == "__main__":
             print(f"Had to search through {temp} permutations of the grid")
 
         count += temp
-        #count += len(tuple(distinct_permutations(grid)))
 
     print(f"Total search space: {count}")

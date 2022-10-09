@@ -29,7 +29,7 @@ def fillomino_finder_smart(side_length, max_size):
     all_games = []
     grid_graph = gen_graph(side_length)
     for part in tqdm(
-        partitions(side_length*side_length),
+        partitions(side_length * side_length),
         total=(num_partitions_of(side_length * side_length)),
     ):
         if max(part) > max_size:

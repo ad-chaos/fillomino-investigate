@@ -1,9 +1,7 @@
 import sys
 from math import factorial
+from collections import Counter
 
-from tqdm import tqdm
-
-from utils import num_partitions_of
 from utils import partitions
 
 if __name__ == "__main__":
@@ -14,12 +12,9 @@ if __name__ == "__main__":
     for part in partitions(n * n):
         if max(part) > m:
             continue
-        grid = []
-        for num in part:
-            grid += [num for _ in range(num)]
 
         temp = permutations_of_grid
-        for duplicate in part:
+        for duplicate in Counter(num for num in part for _ in range(num)).values():
             temp /= factorial(duplicate)
 
         count += temp

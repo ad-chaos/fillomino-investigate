@@ -1,12 +1,11 @@
-import sys
 from math import factorial
 from collections import Counter
 
 from utils import partitions
 
-if __name__ == "__main__":
+
+def searchspace(n, m):
     count = 0
-    n, m = map(int, sys.argv[1:]) if len(sys.argv) == 3 else (3, 9)
     permutations_of_grid = factorial(n * n)
 
     for part in partitions(n * n):
@@ -19,5 +18,15 @@ if __name__ == "__main__":
 
         count += temp
 
-    print("Total search space using partition idea:", int(count))
-    print("Total search space using naive method:", m**n**2)
+    return int(count), m**n**2
+
+
+if __name__ == "__main__":
+    # Going over the searchspace when we have some ixi grid
+    # Stopped at 8x8 because after that the integers become _quite_ large
+    for i in range(9):
+        smart, naive = searchspace(i, i*i)
+        print("Search-Space for a %dx%d grid"%(i,i))
+        print("Partitions:", smart)
+        print("Naive Method:", naive)
+        print()
